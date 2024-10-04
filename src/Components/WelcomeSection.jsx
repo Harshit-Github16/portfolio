@@ -25,8 +25,8 @@ const WelcomeSection = () => {
   }, [mousePosition, controls]);
 
   const socialIcons = [
-    { href: "https://wa.me/your-whatsapp-number", icon: FaWhatsapp, color: "#25D366" },
-    { href: "https://www.instagram.com/your-instagram", icon: FaInstagram, color: "#E1306C" },
+    { href: "https://wa.me/7976696076", icon: FaWhatsapp, color: "#25D366" },
+    { href: "https://www.instagram.com/harshit_0150", icon: FaInstagram, color: "#E1306C" },
     { href: "https://www.linkedin.com/in/your-linkedin", icon: FaLinkedin, color: "#0077B5" }
   ];
 
