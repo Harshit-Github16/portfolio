@@ -15,6 +15,29 @@ const ContactForm = () => {
   const [feedback, setFeedback] = useState('');
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const controls = useAnimation();
+  
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    setResult("Sending....");
+    const formData = new FormData(event.target);
+
+    formData.append("access_key", "1bfdeb48-65d3-484e-9cd1-26eecd328979");
+
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setResult("Form Submitted Successfully");
+      event.target.reset();
+    } else {
+      console.log("Error", data);
+      setResult(data.message);
+    }
+  };
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -73,13 +96,14 @@ const ContactForm = () => {
             transition={{ duration: 0.5 }}
             className="w-full lg:w-1/2"
           >
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={onSubmit} className="space-y-6">
               <div>
                 <label htmlFor="name" className="flex items-center text-sm font-medium text-gray-300">
                   <AiOutlineUser className="mr-2 text-blue-400" /> Name
                 </label>
                 <input
                   type="text"
+                  name='name'
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -88,6 +112,23 @@ const ContactForm = () => {
                   placeholder="Enter your name"
                 />
               </div>
+
+              <div>
+                <label htmlFor="name" className="flex items-center text-sm font-medium text-gray-300">
+                  <AiOutlineUser className="mr-2 text-blue-400" /> Email
+                </label>
+                <input
+                  type="email"
+                  name='email'
+                  id="email"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  className="mt-1 block w-full p-3 bg-transparent text-white placeholder-gray-500 border border-blue-500/30 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-300"
+                  placeholder="Enter your Email"
+                />
+              </div>
+
               <div>
                 <label htmlFor="mobileNo" className="flex items-center text-sm font-medium text-gray-300">
                   <AiOutlinePhone className="mr-2 text-blue-400" /> Mobile No
@@ -95,6 +136,7 @@ const ContactForm = () => {
                 <input
                   type="tel"
                   id="mobileNo"
+                  name='mobileNo'
                   value={mobileNo}
                   onChange={(e) => setMobileNo(e.target.value)}
                   required
@@ -109,6 +151,7 @@ const ContactForm = () => {
                 <textarea
                   id="feedback"
                   value={feedback}
+                  name='feedback'
                   onChange={(e) => setFeedback(e.target.value)}
                   required
                   className="mt-1 block w-full p-3 bg-transparent text-white placeholder-gray-500 border border-blue-500/30 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-300"
