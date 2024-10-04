@@ -11,31 +11,42 @@ import { FaWhatsapp, FaInstagram, FaLinkedin } from 'react-icons/fa';
 
 const ContactForm = () => {
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [mobileNo, setMobileNo] = useState('');
   const [feedback, setFeedback] = useState('');
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [result, setResult] = useState('');
   const controls = useAnimation();
   
   const onSubmit = async (event) => {
+    debugger
     event.preventDefault();
     setResult("Sending....");
     const formData = new FormData(event.target);
 
     formData.append("access_key", "1bfdeb48-65d3-484e-9cd1-26eecd328979");
 
-    const response = await fetch("https://api.web3forms.com/submit", {
-      method: "POST",
-      body: formData
-    });
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.success) {
-      setResult("Form Submitted Successfully");
-      event.target.reset();
-    } else {
-      console.log("Error", data);
-      setResult(data.message);
+      if (data.success) {
+        setResult("Form Submitted Successfully");
+        setName('');
+        setEmail('');
+        setMobileNo('');
+        setFeedback('');
+      } else {
+        console.log("Error", data);
+        setResult(data.message);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setResult("An error occurred. Please try again.");
     }
   };
 
@@ -55,11 +66,6 @@ const ContactForm = () => {
       backgroundPosition: `${mousePosition.x / 50}px ${mousePosition.y / 50}px`,
     });
   }, [mousePosition, controls]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log({ name, mobileNo, feedback });
-  };
 
   const socialIcons = [
     { href: "https://wa.me/7976696076", icon: FaWhatsapp, color: "#25D366" },
@@ -114,15 +120,15 @@ const ContactForm = () => {
               </div>
 
               <div>
-                <label htmlFor="name" className="flex items-center text-sm font-medium text-gray-300">
-                  <AiOutlineUser className="mr-2 text-blue-400" /> Email
+                <label htmlFor="email" className="flex items-center text-sm font-medium text-gray-300">
+                  <AiOutlineMail className="mr-2 text-blue-400" /> Email
                 </label>
                 <input
                   type="email"
                   name='email'
                   id="email"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                   className="mt-1 block w-full p-3 bg-transparent text-white placeholder-gray-500 border border-blue-500/30 rounded-md focus:ring-2 focus:ring-blue-400 focus:border-transparent transition duration-300"
                   placeholder="Enter your Email"
@@ -167,6 +173,11 @@ const ContactForm = () => {
               >
                 Submit
               </motion.button>
+              {result && (
+                <div className={`mt-4 p-3 rounded-md ${result.includes("Successfully") ? "bg-green-500/20 text-green-300" : "bg-red-500/20 text-red-300"}`}>
+                  {result}
+                </div>
+              )}
             </form>
           </motion.div>
 
@@ -226,4 +237,4 @@ const ContactForm = () => {
   );
 };
 
-export default ContactForm; 
+export default ContactForm;
